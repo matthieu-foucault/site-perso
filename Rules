@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+compile '/bootstrap/css/*' do
+  filter :relativize_paths, :type => :css
+  filter :rainpress
+end
+
+compile '/bootstrap/js/*/' do
+   # minify JS :)
+   if $use_minified_js then
+     filter :shellcmd, "java -jar js/js-compiler.jar"
+   end
+end
+
+compile '/bootstrap/*/' do
+  # don't compile
+end
+
+route '/bootstrap/css/*/' do
+  @item.identifier.chop + '.' + @item[:extension]
+end
+
+route '/bootstrap/js/*/' do
+  @item.identifier.chop + '.' + @item[:extension]
+end
+
+compile '*' do
+  if not item.binary?
+    filter :erb
+    layout 'default'
+    filter :relativize_paths, :type => :html
+  end
+end
+
+route '*' do
+  if item.binary?
+  	  item.identifier.chop + '.' + item[:extension]
+  else
+  	  @item.identifier + 'index.html'
+  end
+end
+
+layout '*', :erb

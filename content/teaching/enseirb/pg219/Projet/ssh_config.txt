@@ -1,0 +1,13 @@
+Host enseirb
+HostName ssh.enseirb.fr
+User nom_utilisateur
+
+Host sshmorpheus
+HostName sshmorpheus.enseirb.fr
+User nom_utilisateur
+ProxyCommand ssh enseirb -W %h:%p
+
+Host morpheus
+HostName mafoucault.morpheus.enseirb.fr
+User nom_utilisateur
+ProxyCommand ssh sshmorpheus -W %h:%p
